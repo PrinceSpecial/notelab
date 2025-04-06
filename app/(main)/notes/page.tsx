@@ -1,149 +1,102 @@
-'use client'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
-
-interface Note {
-  id: string
-  title: string
-  tags: string[]
-  // Add any other note fields you need
-}
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function NotesPage() {
-  const [username, setUsername] = useState('')
-  const [notes, setNotes] = useState<Note[]>([])
-  const [filteredNotes, setFilteredNotes] = useState<Note[]>([])
-  const [search, setSearch] = useState('')
-  const [selectedTag, setSelectedTag] = useState<string>('')
-  const router = useRouter()
+  const [username, setUsername] = useState("");
+  const [notes, setNotes] = useState<Note[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
-    const stored = localStorage.getItem('username')
-    if (!stored) router.push('/login')
-    else setUsername(stored)
-  }, [router])
+    const stored = localStorage.getItem("username");
+    if (!stored) router.push("/login");
+    else setUsername(stored);
+  }, [router]);
 
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const res = await fetch('/api/notes')
+        const res = await fetch("/api/notes");
         if (res.ok) {
-          const data = await res.json()
-          setNotes(data)
-          setFilteredNotes(data) // Initialize filtered notes
+          const data = await res.json();
+          setNotes(data);
         } else {
-          toast.error('Failed to fetch notes')
+          toast.error("Failed to fetch notes");
         }
       } catch (error) {
-        toast.error('Error fetching notes')
+        toast.error("Error fetching notes");
       }
-    }
+    };
 
-    if (username) fetchNotes()
-  }, [username])
+    if (username) fetchNotes();
+  }, [username]);
 
   const handleLogout = () => {
-    localStorage.removeItem('username')
-    router.push('/login')
-  }
+    localStorage.removeItem("username");
+    router.push("/login");
+  };
 
   const handleNoteClick = (noteId: string) => {
-    router.push(`/notes/${noteId}`)
-  }
+    router.push(`/notes/${noteId}`);
+  };
 
   const handleCreateNote = () => {
-    router.push('/notes/new')
-  }
+    router.push("/notes/new");
+  };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value)
-    filterNotes(e.target.value, selectedTag)
-  }
-
-  const handleTagFilterChange = (tag: string) => {
-    setSelectedTag(tag)
-    filterNotes(search, tag)
-  }
-
-  const filterNotes = (searchQuery: string, tag: string) => {
-    const filtered = notes.filter(note => {
-      const titleMatches = note.title.toLowerCase().includes(searchQuery.toLowerCase())
-      const tagMatches = tag ? note.tags.includes(tag) : true
-      return titleMatches && tagMatches
-    })
-    setFilteredNotes(filtered)
-  }
-
-  if (!username) return null // or a loader
-
-  // Extract unique tags from all notes
-  const tags = Array.from(new Set(notes.flatMap(note => note.tags)))
+  if (!username) return null;
 
   return (
-    <div>
-      <div className="mb-6 flex justify-between items-center">
-        <div>
+    
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-xl font-semibold text-gray-800">Mes Notes</h2>
           <button
             onClick={handleCreateNote}
-            className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-600"
+            className="bg-blue-600 text-white px-6 py-2.5 rounded-full hover:bg-blue-700 transition-colors shadow-sm cursor-pointer"
           >
             Nouvelle Note
           </button>
         </div>
 
-        <div className="flex items-center gap-4">
-          <input
-            type="text"
-            value={search}
-            onChange={handleSearchChange}
-            placeholder="Rechercher par titre"
-            className="p-2 border rounded-lg shadow-md w-64"
-          />
-
-          <div className="flex gap-2">
-            <label className="font-semibold text-gray-700">Filtrer par tag</label>
-            <select
-              value={selectedTag}
-              onChange={(e) => handleTagFilterChange(e.target.value)}
-              className="p-2 border rounded-lg shadow-md"
-            >
-              <option value="">Tous les tags</option>
-              {tags.map((tag, index) => (
-                <option key={index} value={tag}>
-                  {tag}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredNotes.length > 0 ? (
-          filteredNotes.map((note) => (
-            <div
-              key={note.id}
-              className="bg-white shadow-lg rounded-lg p-6 cursor-pointer hover:shadow-xl transition duration-300 transform hover:scale-105"
-              onClick={() => handleNoteClick(note.id)}
-            >
-              <h2 className="text-xl font-semibold text-gray-800">{note.title}</h2>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {note.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="bg-gray-200 text-gray-600 text-sm px-3 py-1 rounded-full"
-                  >
-                    {tag}
-                  </span>
-                ))}
+        {notes.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {notes.map((note) => (
+              <div
+                key={note.id}
+                onClick={() => handleNoteClick(note.id)}
+                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-5 cursor-pointer border border-gray-100"
+              >
+                <h3 className="font-medium text-lg text-gray-800 mb-2 truncate">
+                  {note.title}
+                </h3>
+                {note.content && (
+                  <p
+                    className="text-gray-500 text-sm line-clamp-3"
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        note.content.length > 100
+                          ? note.content.slice(0, 100) + "..."
+                          : note.content,
+                    }}
+                  />
+                )}
+                <div className="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
+                  {/* <span className="text-xs text-gray-400">Last edited: {note.updatedAt}</span> */}
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
-          <p className="text-gray-600">Aucune note trouvée</p>
+          <div className="text-center py-16">
+            <p className="text-gray-500 mb-6">Aucune note trouvée</p>
+            <p className="text-gray-400 text-sm">
+              Créez votre première note en cliquant sur "Nouvelle Note"
+            </p>
+          </div>
         )}
-      </div>
-    </div>
-  )
+      </main>
+  );
 }

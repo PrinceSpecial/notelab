@@ -68,65 +68,97 @@ export default function CollaborativeNote({
   }
 
   return (
-    <div className="p-4">
-      <label className="block font-medium text-gray-700 mb-2">Note Title</label>
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => handleTitleChange(e.target.value)}
-        className="w-full p-2 border rounded mb-4"
-      />
+    <div className="space-y-6">
+      {/* Title Input */}
+      <div>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => handleTitleChange(e.target.value)}
+          className="w-full px-4 py-3 text-xl font-medium text-gray-800 bg-transparent border-0 border-b-2 border-gray-200 focus:border-blue-500 focus:ring-0 transition-colors placeholder:text-gray-400 cursor-text"
+          placeholder="Untitled Note..."
+        />
+      </div>
 
-      {/* Toolbar */}
+      {/* Formatting Toolbar */}
       {editor && (
-        <div className="flex gap-2 mb-4 flex-wrap">
-          <button
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            className={`px-2 py-1 rounded border ${
-              editor.isActive('bold') ? 'bg-black text-white' : ''
-            }`}
-          >
-            Bold
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={`px-2 py-1 rounded border ${
-              editor.isActive('italic') ? 'bg-black text-white' : ''
-            }`}
-          >
-            Italic
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            className={`px-2 py-1 rounded border ${
-              editor.isActive('underline') ? 'bg-black text-white' : ''
-            }`}
-          >
-            Underline
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-            className={`px-2 py-1 rounded border ${
-              editor.isActive('heading', { level: 1 }) ? 'bg-black text-white' : ''
-            }`}
-          >
-            H1
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            className={`px-2 py-1 rounded border ${
-              editor.isActive('heading', { level: 2 }) ? 'bg-black text-white' : ''
-            }`}
-          >
-            H2
-          </button>
+        <div className="flex items-center gap-1 p-1 bg-gray-50 border border-gray-200 rounded-lg">
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              className={`p-2 rounded-md hover:bg-white hover:shadow-sm transition-all cursor-pointer ${
+                editor.isActive('bold') 
+                  ? 'bg-white shadow-sm text-blue-600' 
+                  : 'text-gray-600'
+              }`}
+              title="Bold"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"></path>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"></path>
+              </svg>
+            </button>
+            <button
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              className={`p-2 rounded-md hover:bg-white hover:shadow-sm transition-all cursor-pointer ${
+                editor.isActive('italic') 
+                  ? 'bg-white shadow-sm text-blue-600' 
+                  : 'text-gray-600'
+              }`}
+              title="Italic"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 4h4M12 4v16M8 20h8"></path>
+              </svg>
+            </button>
+            <button
+              onClick={() => editor.chain().focus().toggleUnderline().run()}
+              className={`p-2 rounded-md hover:bg-white hover:shadow-sm transition-all cursor-pointer ${
+                editor.isActive('underline') 
+                  ? 'bg-white shadow-sm text-blue-600' 
+                  : 'text-gray-600'
+              }`}
+              title="Underline"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4v7a5 5 0 0010 0V4M5 20h14"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div className="w-px h-6 bg-gray-200 mx-1"></div>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium hover:bg-white hover:shadow-sm transition-all cursor-pointer ${
+                editor.isActive('heading', { level: 1 }) 
+                  ? 'bg-white shadow-sm text-blue-600' 
+                  : 'text-gray-600'
+              }`}
+            >
+              H1
+            </button>
+            <button
+              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium hover:bg-white hover:shadow-sm transition-all cursor-pointer ${
+                editor.isActive('heading', { level: 2 }) 
+                  ? 'bg-white shadow-sm text-blue-600' 
+                  : 'text-gray-600'
+              }`}
+            >
+              H2
+            </button>
+          </div>
         </div>
       )}
 
       {/* Editor Content */}
-      <div className="border rounded p-2 flex-1">
-        {/* Set the EditorContent height to 100% of the parent */}
-        <EditorContent editor={editor} className="w-full h-full" />
+      <div className="prose prose-lg max-w-none">
+        <EditorContent 
+          editor={editor} 
+          className="focus:outline-none cursor-text text-black"
+        />
       </div>
     </div>
   )

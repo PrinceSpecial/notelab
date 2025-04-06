@@ -18,35 +18,30 @@ export default function NotesLayout({ children, username }: LayoutProps) {
   }
 
   const navigateToNotes = () => {
-    router.push('/notes') // Navigate to the list of notes
+    router.push('/notes')
   }
 
   return (
-    <main className="min-h-screen p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">Bienvenue {username} 👋</h1>
-        
-        <div className="flex items-center gap-4">
-          {/* Mes Notes Button */}
-          <button
-            onClick={navigateToNotes}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Mes Notes
-          </button>
-
-          {/* Logout Button */}
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Déconnexion
-          </button>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-800">NoteLab</h1>
+          <div className="flex items-center space-x-4">
+            <span className="text-gray-600">
+              Bonjour, <span className="font-medium">{username}</span> 👋
+            </span>
+            <button
+              onClick={handleLogout}
+              className="bg-white text-red-500 border border-red-500 px-4 py-2 rounded-full hover:bg-red-50 transition-colors cursor-pointer"
+            >
+              Déconnexion
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
       {children}
       <Toaster />
-    </main>
+    </div>
   )
 }

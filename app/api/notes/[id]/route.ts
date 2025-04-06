@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/db' // Make sure to import your DB utility correctly
+import { db } from '@/db'
 import { notes } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
@@ -18,13 +18,13 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
       .from(notes)
       .where(eq(notes.id, id))
       .limit(1)
-      .then((result) => result[0]); // Only take the first result
+      .then((result) => result[0]);
 
     if (!note) {
       return NextResponse.json({ error: 'Note not found' }, { status: 404 })
     }
 
-    return NextResponse.json(note) // Return the note data
+    return NextResponse.json(note)
   } catch (error) {
     console.error(error)
     return NextResponse.json({ error: 'Failed to fetch note' }, { status: 500 })

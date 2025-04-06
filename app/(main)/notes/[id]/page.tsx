@@ -3,14 +3,25 @@
 import { use, useEffect, useState } from "react";
 import CollaborativeNote from "@/components/collaborative-notes";
 import { useRouter } from "next/navigation";
+import { useSocketContext } from "@/contexts/SocketContext";
+import { toast } from "sonner";
 
 type Params = Promise<{ id: string }>;
+
+type SocketMessage = {
+  noteId: string;
+  updatedAt: string;
+  lastUpdatedBy: string;
+}
 
 export default function NoteDetailPage(props: { params: Params }) {
   const params: { id: string } = use(props.params);
   const router = useRouter();
   const [note, setNote] = useState<Note | null>(null);
   const id = params.id;
+  const { emit, on, off } = useSocketContext()
+  const [ updatedAt, setUpdatedAt ] = useState<string>("")
+  const [ lastUpdatedBy, setLastUpdatedBy ] = useState<string>("")
 
   useEffect(() => {
     if (id) {
@@ -19,13 +30,32 @@ export default function NoteDetailPage(props: { params: Params }) {
         if (res.ok) {
           const data = await res.json();
           setNote(data);
+          setUpdatedAt(data.updatedAt)
+          setLastUpdatedBy(data.lastUpdatedBy)
         } else {
-          console.error("Failed to fetch note");
+          toast.error("Erreur lors de la récupération de la note.");
+          toast.error("Cette note n'existe pas ou a été supprimée.");
+          return;
         }
       };
       fetchNote();
     }
   }, [id]);
+
+  useEffect(() => {
+    // Listen for note updates
+    on('note:update:success', (data: SocketMessage) => {
+      if (data.noteId === id) {
+        if (data.updatedAt !== updatedAt) setUpdatedAt(data.updatedAt)
+        if (data.lastUpdatedBy !== lastUpdatedBy) setLastUpdatedBy(data.lastUpdatedBy)
+      }
+    })
+
+    // Cleanup listener on unmount
+    return () => {
+      off('note:date:update')
+    }
+  }, [id, updatedAt])
 
   if (!note) {
     return (
@@ -49,7 +79,7 @@ export default function NoteDetailPage(props: { params: Params }) {
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 rounded-full bg-green-500"></div>
             <span className="text-sm text-gray-600">
-              Dernière modification à {new Date().toLocaleTimeString()}
+              Dernière modification à {new Date(updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} par{` ${lastUpdatedBy}`}
             </span>
           </div>
         </div>

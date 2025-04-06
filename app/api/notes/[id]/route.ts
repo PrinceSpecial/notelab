@@ -41,9 +41,9 @@ export async function PATCH(req: NextRequest, context: { params: { id: string } 
     if (!content && !title) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     }
-    console.log(id, content, title)
-    await db.update(notes).set(body).where(eq(notes.id, id)).returning()
-    return NextResponse.json({ success: true })
+    body.updatedAt = new Date()
+    const result = await db.update(notes).set(body).where(eq(notes.id, id)).returning()
+    return NextResponse.json({ success: true, data: result[0] })
   } catch (error) {
     console.error('PATCH /api/notes/[id] error:', error)
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 })

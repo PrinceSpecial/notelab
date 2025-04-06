@@ -8,4 +8,6 @@ export const notes = pgTable("notes", {
   tags: text("tags").array(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  userId: varchar("user_id", { length: 255 }).notNull(),
+  lastUpdatedBy: varchar("last_updated_by", { length: 255 }).notNull(),
 });

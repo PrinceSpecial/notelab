@@ -3,7 +3,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import { useEffect, useState } from 'react'
-import io from 'socket.io-client'
+import { useSocketContext } from '@/contexts/SocketContext'
 
 type SocketMessage = {
   noteId: string
@@ -21,25 +21,20 @@ export default function CollaborativeNote({
   initialContent: string
 }) {
   const [title, setTitle] = useState(initialTitle)
-  const [socket, setSocket] = useState<any>(null)
+  const { emit, on, off } = useSocketContext()
 
   const editor = useEditor({
     extensions: [StarterKit, Underline],
     content: initialContent,
     onUpdate({ editor }) {
       const newContent = editor.getHTML()
-      socket?.emit('note:update', { noteId, title, content: newContent })
+      emit('note:update', { noteId, title, content: newContent , lastUpdatedBy: localStorage.getItem('username') })
     },
   })
 
   useEffect(() => {
-    const socketIo = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4000')
-  
-    socketIo.on('connect', () => {
-      console.log('✅ Connected to Socket.IO server')
-    })
-  
-    socketIo.on('note:update', (data: SocketMessage) => {
+    // Listen for note updates
+    on('note:update', (data: SocketMessage) => {
       if (data.noteId === noteId && editor) {
         if (data.title !== title) setTitle(data.title)
         if (data.content !== editor.getHTML()) {
@@ -47,24 +42,20 @@ export default function CollaborativeNote({
         }
       }
     })
-  
-    setSocket(socketIo)
-  
+
+    // Cleanup listener on unmount
     return () => {
-      socketIo.disconnect()
+      off('note:update')
     }
-  }, [noteId, editor])
-  
+  }, [noteId, editor, title])
 
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle)
-    if (socket) {
-      socket.emit('note:update', {
-        noteId,
-        title: newTitle,
-        content: editor?.getHTML() || '',
-      })
-    }
+    emit('note:update', {
+      noteId,
+      title: newTitle,
+      content: editor?.getHTML() || '',
+    })
   }
 
   return (

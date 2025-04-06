@@ -22,6 +22,8 @@ export default function NewNotePage() {
       const response = await axios.post("/api/notes", {
         title,
         tags: tags.split(",").map((tag) => tag.trim()),
+        userId: localStorage.getItem("username"),
+        lastUpdatedBy: localStorage.getItem("username"),
       });
 
       const noteId = response.data?.id;

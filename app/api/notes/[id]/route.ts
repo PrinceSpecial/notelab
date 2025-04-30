@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/db' // Make sure to import your DB utility correctly
+import { db } from '@/db'
 import { notes } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
@@ -18,13 +18,13 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
       .from(notes)
       .where(eq(notes.id, id))
       .limit(1)
-      .then((result) => result[0]); // Only take the first result
+      .then((result) => result[0]);
 
     if (!note) {
       return NextResponse.json({ error: 'Note not found' }, { status: 404 })
     }
 
-    return NextResponse.json(note) // Return the note data
+    return NextResponse.json(note)
   } catch (error) {
     console.error(error)
     return NextResponse.json({ error: 'Failed to fetch note' }, { status: 500 })
@@ -41,9 +41,9 @@ export async function PATCH(req: NextRequest, context: { params: { id: string } 
     if (!content && !title) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     }
-    console.log(id, content, title)
-    await db.update(notes).set(body).where(eq(notes.id, id)).returning()
-    return NextResponse.json({ success: true })
+    body.updatedAt = new Date()
+    const result = await db.update(notes).set(body).where(eq(notes.id, id)).returning()
+    return NextResponse.json({ success: true, data: result[0] })
   } catch (error) {
     console.error('PATCH /api/notes/[id] error:', error)
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 })

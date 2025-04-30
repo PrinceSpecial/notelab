@@ -10,7 +10,8 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const body = await req.json()
-  const { title, tags } = body
+  console.log(body)
+  const { title, tags, userId, lastUpdatedBy } = body
 
   if (!title) {
     return NextResponse.json({ error: 'Titre requis' }, { status: 400 })
@@ -21,6 +22,8 @@ export async function POST(req: Request) {
     title,
     tags,
     content: '', // default empty
+    userId,
+    lastUpdatedBy,
   }).returning()
   const noteId = result[0].id
 

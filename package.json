@@ -13,7 +13,8 @@
     "generate": "drizzle-kit generate",
     "push": "drizzle-kit push",
     "migrate": "drizzle-kit migrate",
-    "ws-server": "ts-node server/socket-server.ts"
+    "ws-server": "ts-node server/socket-server.ts",
+    "dev:all": "concurrently \"npm run dev\" \"npm run ws-server\""
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^44.3.0",
@@ -24,6 +25,7 @@
     "@tiptap/react": "^2.11.7",
     "@tiptap/starter-kit": "^2.11.7",
     "axios": "^1.8.4",
+    "concurrently": "^9.1.2",
     "drizzle-kit": "^0.30.6",
     "drizzle-orm": "^0.41.0",
     "express": "^5.1.0",

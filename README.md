@@ -102,4 +102,4 @@ Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de
 
 ## DEMO VIDEO
 
-[![Demo Video](./demo-thumbnail.png)](./NotesCollaboratives.mp4)
+[![Demo Video](./demo-thumbnail.png)](https://www.youtube.com/watch?v=C8N_8DH8rVE)

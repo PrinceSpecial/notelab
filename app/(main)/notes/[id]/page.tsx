@@ -19,7 +19,7 @@ export default function NoteDetailPage(props: { params: Params }) {
   const router = useRouter();
   const [note, setNote] = useState<Note | null>(null);
   const id = params.id;
-  const { emit, on, off } = useSocketContext()
+  const { on, off } = useSocketContext()
   const [ updatedAt, setUpdatedAt ] = useState<string>("")
   const [ lastUpdatedBy, setLastUpdatedBy ] = useState<string>("")
 
@@ -55,7 +55,7 @@ export default function NoteDetailPage(props: { params: Params }) {
     return () => {
       off('note:date:update')
     }
-  }, [id, updatedAt])
+  }, [id, updatedAt, lastUpdatedBy, off, on])
 
   if (!note) {
     return (
@@ -83,7 +83,8 @@ export default function NoteDetailPage(props: { params: Params }) {
             </span>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
+        {/* Partie collaborateurs */}
+        {/* <div className="flex items-center space-x-3">
           <div className="flex -space-x-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 border-2 border-white flex items-center justify-center shadow-sm">
               <span className="text-xs text-white font-medium">JD</span>
@@ -96,7 +97,7 @@ export default function NoteDetailPage(props: { params: Params }) {
             <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
             <span className="text-sm font-medium text-gray-700">2 collaborateurs en ligne</span>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="bg-white rounded-xl shadow-md border border-gray-200">

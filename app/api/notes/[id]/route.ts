@@ -3,9 +3,11 @@ import { db } from '@/db'
 import { notes } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
+type tParams = Promise<{ id: string }>;
+
 // Handle GET request
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
-  const { id } = await context.params;
+export async function GET(req: NextRequest, { params }: { params:  tParams }) {
+  const { id } = await params;
 
   try {
     if (!id || typeof id !== 'string') {
@@ -31,9 +33,9 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
   }
 }
 
-export async function PATCH(req: NextRequest, context: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params:  tParams }) {
   try {
-    const { id } = await context.params;
+    const { id } = await params;
     const body = await req.json()
     console.log(body)
     const { content, title } = body

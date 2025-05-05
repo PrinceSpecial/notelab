@@ -2,6 +2,7 @@
   "name": "notelab",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -14,7 +15,8 @@
     "push": "drizzle-kit push",
     "migrate": "drizzle-kit migrate",
     "ws-server": "ts-node server/socket-server.ts",
-    "dev:all": "concurrently \"npm run dev\" \"npm run ws-server\""
+    "dev:all": "concurrently \"npm run dev\" \"npm run ws-server\"",
+    "start:all": "npm run build && concurrently \"npm run start\" \"npm run ws-server\""
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^44.3.0",

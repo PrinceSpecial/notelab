@@ -9,6 +9,7 @@ export default function Home() {
         </h1>
         <p className="text-lg text-center sm:text-left max-w-3xl">
           NoteLab est une application de prise de notes collaborative permettant
+          {/* eslint-disable-next-line react/no-unescaped-entities */}
           de créer, modifier et partager des notes en temps réel avec d'autres
           utilisateurs.
         </p>
@@ -18,6 +19,7 @@ export default function Home() {
             Commencez par vous connecter pour créer et organiser vos notes.
           </li>
           <li className="tracking-[-.01em]">
+            {/* eslint-disable-next-line react/no-unescaped-entities */}
             Collaborez en temps réel avec d'autres utilisateurs.
           </li>
         </ol>

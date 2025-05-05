@@ -47,7 +47,7 @@ export default function CollaborativeNote({
     return () => {
       off('note:update')
     }
-  }, [noteId, editor, title])
+  }, [noteId, editor, title, off, on])
 
   const handleTitleChange = (newTitle: string) => {
     setTitle(newTitle)
